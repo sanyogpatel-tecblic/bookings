@@ -172,8 +172,8 @@ func (m *Repository) PostReservation(w http.ResponseWriter, r *http.Request) {
 	// 	http.Redirect(w, r, "/", http.StatusSeeOther)
 	// 	return
 	// }
-	reservation.Firstname = r.Form.Get("first_name")
-	reservation.Lastname = r.Form.Get("first_name")
+	reservation.FirstName = r.Form.Get("first_name")
+	reservation.LastName = r.Form.Get("first_name")
 	reservation.Phone = r.Form.Get("phone")
 	reservation.Email = r.Form.Get("email")
 
@@ -215,7 +215,7 @@ func (m *Repository) PostReservation(w http.ResponseWriter, r *http.Request) {
 	htmlMessage := fmt.Sprintf(`
 		<strong>Reservation Confirmation</strong><br>
 		Dear %s:,<br>
-		This is a confirm your reservation from %s to %s.`, reservation.Firstname, reservation.StartDate.Format("2006-01-02"),
+		This is a confirm your reservation from %s to %s.`, reservation.FirstName, reservation.StartDate.Format("2006-01-02"),
 		reservation.EndDate.Format("2006-01-02"))
 	//send notifications first to guest
 	msg := models.MailData{
@@ -456,4 +456,38 @@ func (m *Repository) Logout(w http.ResponseWriter, r *http.Request) {
 
 func (m *Repository) AdminDashboard(w http.ResponseWriter, r *http.Request) {
 	render.Template(w, r, "admin-dashboard.page.tmpl", &models.TemplateData{})
+}
+
+func (m *Repository) AdminAllReservations(w http.ResponseWriter, r *http.Request) {
+	reservation, err := m.DB.AllReservations()
+	if err != nil {
+		helpers.ServerError(w, err)
+		return
+	}
+	data := make(map[string]interface{})
+	data["reservations"] = reservation
+
+	render.Template(w, r, "admin-all-reservations.page.tmpl", &models.TemplateData{
+		Data: data,
+	})
+}
+
+func (m *Repository) AdminNewReservations(w http.ResponseWriter, r *http.Request) {
+	reservation, err := m.DB.AllNewReservations()
+	if err != nil {
+		helpers.ServerError(w, err)
+		return
+	}
+
+	data := make(map[string]interface{})
+
+	data["reservations"] = reservation
+
+	render.Template(w, r, "admin-new-reservations.page.tmpl", &models.TemplateData{
+		Data: data,
+	})
+}
+
+func (m *Repository) AdminReservationsCalender(w http.ResponseWriter, r *http.Request) {
+	render.Template(w, r, "admin-reservations-calender.page.tmpl", &models.TemplateData{})
 }

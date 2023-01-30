@@ -28,8 +28,8 @@ type Restriction struct {
 }
 type Reservation struct {
 	ID        int
-	Firstname string
-	Lastname  string
+	FirstName string
+	LastName  string
 	Email     string
 	Phone     string
 	StartDate time.Time

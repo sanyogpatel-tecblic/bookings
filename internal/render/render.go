@@ -7,13 +7,21 @@ import (
 	"html/template"
 	"net/http"
 	"path/filepath"
+	"time"
 
 	"github.com/justinas/nosurf"
 	"github.com/sanyogpatel-tecblic/bookings/internal/config"
 	"github.com/sanyogpatel-tecblic/bookings/internal/models"
 )
 
-var functions = template.FuncMap{}
+var functions = template.FuncMap{
+	//so whenever i use "humanDate" it points to HumanDate function which is declared downside
+	"humanDate": HumanDate,
+}
+
+func HumanDate(t time.Time) string {
+	return t.Format("2006-01-02")
+}
 
 var app *config.AppConfig
 var pathToTemplates = "./templates"
